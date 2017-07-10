@@ -16,6 +16,7 @@ class Main extends Phaser.State {
     this.game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
   }
   create() {
+    this.game.playerMap = {};
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     this.game.add.sprite(0, 0, 'sky');
 
@@ -50,9 +51,13 @@ class Main extends Phaser.State {
       right: game.input.keyboard.addKey(Phaser.Keyboard.D)
     }
 
-    Client.askNewPlayer();
+    // Client.askNewPlayer();
+    let client = new Client(this.game, '8081');
+    client.askNewPlayer();
   }
   update() {
+
+    
     // this.game.physics.arcade.collide(this.p1.player, this.platforms);
     // this.game.physics.arcade.collide(this.p2.player, this.platforms);
     // this.p1.changeVelocity('x', 0);
@@ -78,10 +83,6 @@ class Main extends Phaser.State {
     // {
     //   this.p2.move('up', 350);
     // }
-  }
-  addNewPlayer(id, x, y) {
-    let keyboard = this.game.input.keyboard.createCursorKeys();
-    this.playerMap[id] = new Player(this.game, keyboard, x, y, 'dude');
   }
 }
 
