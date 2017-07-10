@@ -38,14 +38,16 @@ class Main extends Phaser.State {
 
     ledge.body.immovable = true;
 
-    this.p1 = new Player(this.game, 32, this.game.world.height - 150, 'dude');
-    this.p2 = new Player(this.game, 100, this.game.world.height - 150, 'dude');
-
-    this.k1 = this.game.input.keyboard.createCursorKeys();
-    this.upButton = game.input.keyboard.addKey(Phaser.Keyboard.W);
-    this.downButton = game.input.keyboard.addKey(Phaser.Keyboard.S);
-    this.leftButton = game.input.keyboard.addKey(Phaser.Keyboard.A);
-    this.rightButton = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    let p1Controls = this.game.input.keyboard.createCursorKeys();
+    let p2Controls = {
+      up: game.input.keyboard.addKey(Phaser.Keyboard.W),
+      down: game.input.keyboard.addKey(Phaser.Keyboard.S),
+      left: game.input.keyboard.addKey(Phaser.Keyboard.A),
+      right: game.input.keyboard.addKey(Phaser.Keyboard.D)
+    }
+    
+    this.p1 = new Player(this.game, p1Controls, 32, this.game.world.height - 150, 'dude');
+    this.p2 = new Player(this.game, p2Controls, 100, this.game.world.height - 150, 'dude');
 
   }
 
@@ -55,39 +57,26 @@ class Main extends Phaser.State {
     this.p1.changeVelocity('x', 0);
     this.p2.changeVelocity('x', 0);
 
-    if (this.k1.left.isDown)
-    {
-      this.p1.move('left', 150);
-    }
-    else if (this.k1.right.isDown)
-    {
-      this.p1.move('right', 150);
-    }
-    else
-    {
-      this.p1.stop();
-    }
-    if (this.k1.up.isDown && this.p1.isTouchingDown())
-    {
-      this.p1.move('up', 350);
-    }
-    ///////// player 2
-    if (this.leftButton.isDown)
-    {
-      this.p2.move('left', 150);
-    }
-    else if (this.rightButton.isDown)
-    {
-      this.p2.move('right', 150);
-    }
-    else
-    {
-      this.p2.stop();
-    }
-    if (this.upButton.isDown && this.p2.isTouchingDown())
-    {
-      this.p2.move('up', 350);
-    }
+    this.p1.update();
+    this.p2.update();
+    
+    // ///////// player 2
+    // if (this.leftButton.isDown)
+    // {
+    //   this.p2.move('left', 150);
+    // }
+    // else if (this.rightButton.isDown)
+    // {
+    //   this.p2.move('right', 150);
+    // }
+    // else
+    // {
+    //   this.p2.stop();
+    // }
+    // if (this.upButton.isDown && this.p2.isTouchingDown())
+    // {
+    //   this.p2.move('up', 350);
+    // }
 
   }
 }
