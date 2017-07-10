@@ -1,9 +1,13 @@
 import Player from '../common/player';
+import Client from '../common/client';
 
 class Main extends Phaser.State {
   constructor() {
     super()
     this.platforms = null;
+  }
+  init() {
+    this.game.stage.disableVisibilityChange = true;
   }
   preload() {
     this.game.load.image('sky', 'assets/sky.png');
@@ -45,20 +49,17 @@ class Main extends Phaser.State {
       left: game.input.keyboard.addKey(Phaser.Keyboard.A),
       right: game.input.keyboard.addKey(Phaser.Keyboard.D)
     }
-    
-    this.p1 = new Player(this.game, p1Controls, 32, this.game.world.height - 150, 'dude');
-    this.p2 = new Player(this.game, p2Controls, 100, this.game.world.height - 150, 'dude');
 
+    Client.askNewPlayer();
   }
-
   update() {
-    this.game.physics.arcade.collide(this.p1.player, this.platforms);
-    this.game.physics.arcade.collide(this.p2.player, this.platforms);
-    this.p1.changeVelocity('x', 0);
-    this.p2.changeVelocity('x', 0);
+    // this.game.physics.arcade.collide(this.p1.player, this.platforms);
+    // this.game.physics.arcade.collide(this.p2.player, this.platforms);
+    // this.p1.changeVelocity('x', 0);
+    // this.p2.changeVelocity('x', 0);
 
-    this.p1.update();
-    this.p2.update();
+    // this.p1.update();
+    // this.p2.update();
     
     // ///////// player 2
     // if (this.leftButton.isDown)
@@ -77,7 +78,10 @@ class Main extends Phaser.State {
     // {
     //   this.p2.move('up', 350);
     // }
-
+  }
+  addNewPlayer(id, x, y) {
+    let keyboard = this.game.input.keyboard.createCursorKeys();
+    this.playerMap[id] = new Player(this.game, keyboard, x, y, 'dude');
   }
 }
 
