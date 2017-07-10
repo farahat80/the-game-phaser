@@ -1,7 +1,8 @@
 import Game from '../states/main';
+import io from 'socket.io/node_modules/socket.io-client';
 
 var Client = {};
-Client.socket = io.connect();
+Client.socket = io.connect('http://localhost:8081');
 
 Client.askNewPlayer = function(){
   Client.socket.emit('newplayer');
