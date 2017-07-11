@@ -31,7 +31,7 @@ io.on('connection', function (socket) {
     socket.player.x = newPlayerData.x;
     socket.player.y = newPlayerData.y;
 
-    socket.emit('playerMoved', socket.player);
+    io.sockets.emit('playerMoved', socket.player);
   });
 });
 
