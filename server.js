@@ -15,21 +15,23 @@ server.listen(process.env.PORT || 8081,function(){
 server.lastPlayerID = 0; // Keep track of the last id assigned to a new player
 
 io.on('connection', function (socket) {
-  console.log('new connection')
-  socket.on('newplayer', function () {
-    console.log('new player')
+  socket.emit('allExistingPlayers', getAllPlayers());
+
+  socket.on('register', function () {
     socket.player = {
       id: server.lastPlayerID++,
       x: randomInt(100, 400),
       y: randomInt(100, 400)
     };
-    socket.emit('allplayers', getAllPlayers());
-    socket.broadcast.emit('newplayer', socket.player);
+    socket.broadcast.emit('newPlayer', socket.player);
+    socket.emit('registered', socket.player);
+  });
 
-    socket.on('disconnect', function () {
-      console.log('player disconnected')
-      io.emit('remove', socket.player.id);
-    });
+  socket.on('move', function(newPlayerData){
+    socket.player.x = newPlayerData.x;
+    socket.player.y = newPlayerData.y;
+
+    socket.emit('playerMoved', socket.player);
   });
 });
 

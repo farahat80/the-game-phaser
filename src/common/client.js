@@ -5,20 +5,35 @@ export default class Client {
   constructor(game, port) {
     const server = `http://localhost:${port}`;
     this.game = game;
+
     this.socket = io.connect(server);
-    this.socket.on('allplayers', this.getAllPlayers.bind(this));
+    this.socket.on('allExistingPlayers', this.registerPlayers.bind(this));
+    this.socket.on('newPlayer', this.addPlayer.bind(this));
+    this.socket.on('registered', function(playerData){
+        this.addPlayer(playerData);
+        this.game.player = playerData;
+    }.bind(this));
+    this.socket.on('playerMoved', this.movePlayer.bind(this));
   }
-  askNewPlayer() {
-    this.socket.emit('newplayer');
+  register() {
+    this.socket.emit('register');
   }
-  getAllPlayers(data) {
+  move(playerData){
+    this.socket.emit('move', playerData);
+  }
+  registerPlayers(data) {
     let self = this;
     for (var i = 0; i < data.length; i++) {
-      self.addNewPlayer(data[i].id, data[i].x, data[i].y);
+      self.addPlayer(data[i]);
     }
   }
-  addNewPlayer(id, x, y) {
+  addPlayer(playerData) {
     let keyboard = this.game.input.keyboard.createCursorKeys();
-    this.game.playerMap[id] = new Player(this.game, keyboard, x, y, 'dude');
+    this.game.playerMap[playerData.id] = new Player(this.game, keyboard,
+                                                    playerData.x, playerData.y,
+                                                    'dude');
+  }
+  movePlayer(playerData) {
+      this.game.playerMap[playerData.id].dumbMove(playerData.x, playerData.y);
   }
 }

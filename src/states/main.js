@@ -45,17 +45,20 @@ class Main extends Phaser.State {
 
     ledge.body.immovable = true;
 
-    this.client.askNewPlayer();
+    this.client.register();
   }
   update() {
-    if(this.keyboard.left.isDown){
-      console.log("Left Down!");
-    } else if(this.keyboard.right.isDown){
-      console.log("Right Down!");
-    } else if(this.keyboard.up.isDown){
-      console.log("Up Down!");
-    } else if(this.keyboard.down.isDown){
-      console.log("Down Down!");
+    if(this.game.player){
+      if(this.keyboard.left.isDown){
+        this.game.player.x -= 10;
+      } else if(this.keyboard.right.isDown){
+        this.game.player.x += 10;
+      } else if(this.keyboard.up.isDown){
+        this.game.player.y -= 10;
+      } else if(this.keyboard.down.isDown){
+        this.game.player.y += 10;
+      }
+      this.client.move(this.game.player);
     }
   }
 }

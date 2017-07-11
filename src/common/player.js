@@ -44,6 +44,10 @@ export default class Player{
   animate(direction) {
     this.player.animations.play(direction);
   }
+  dumbMove(x, y){
+      this.player.x = x;
+      this.player.y = y;
+  }
   move(direction, speed) {
     switch (direction) {
       case 'right':
