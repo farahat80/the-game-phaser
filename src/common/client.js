@@ -13,7 +13,6 @@ export default class Client {
   }
   getAllPlayers(data) {
     let self = this;
-    console.log(data);
     for (var i = 0; i < data.length; i++) {
       self.addNewPlayer(data[i].id, data[i].x, data[i].y);
     }

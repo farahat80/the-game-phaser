@@ -3,11 +3,13 @@ import Client from '../common/client';
 
 class Main extends Phaser.State {
   constructor() {
-    super()
+    super();
     this.platforms = null;
   }
   init() {
     this.game.stage.disableVisibilityChange = true;
+    this.client = new Client(this.game, '8081');
+    this.keyboard = this.game.input.keyboard.createCursorKeys();
   }
   preload() {
     this.game.load.image('sky', 'assets/sky.png');
@@ -43,19 +45,18 @@ class Main extends Phaser.State {
 
     ledge.body.immovable = true;
 
-    // Client.askNewPlayer();
-    let client = new Client(this.game, '8081');
-    client.askNewPlayer();
+    this.client.askNewPlayer();
   }
   update() {
-    for(let i=0; i<this.game.playerMap.length; i++){
-      this.game.physics.arcade.collide(this.game.playerMap[i], this.platforms);
-      this.playerMap[i].changeVelocity('x', 0);
-      this.playerMap[i].update();
+    if(this.keyboard.left.isDown){
+      console.log("Left Down!");
+    } else if(this.keyboard.right.isDown){
+      console.log("Right Down!");
+    } else if(this.keyboard.up.isDown){
+      console.log("Up Down!");
+    } else if(this.keyboard.down.isDown){
+      console.log("Down Down!");
     }
-    // this.game.physics.arcade.collide(this.p1.player, this.platforms);
-    // this.p1.changeVelocity('x', 0);
-    // this.p1.update();
   }
 }
 
