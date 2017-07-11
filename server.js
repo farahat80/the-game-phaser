@@ -12,14 +12,14 @@ server.listen(process.env.PORT || 8081,function(){
   console.log('Listening on '+server.address().port);
 });
 
-server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
+server.lastPlayerID = 0; // Keep track of the last id assigned to a new player
 
 io.on('connection', function (socket) {
   console.log('new connection')
   socket.on('newplayer', function () {
     console.log('new player')
     socket.player = {
-      id: server.lastPlayderID++,
+      id: server.lastPlayerID++,
       x: randomInt(100, 400),
       y: randomInt(100, 400)
     };
