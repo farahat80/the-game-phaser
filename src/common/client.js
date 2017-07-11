@@ -1,4 +1,4 @@
-import io from 'socket.io/node_modules/socket.io-client';
+import io from '../../node_modules/socket.io-client';
 import Player from './player';
 
 export default class Client {
