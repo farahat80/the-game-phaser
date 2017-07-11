@@ -43,46 +43,19 @@ class Main extends Phaser.State {
 
     ledge.body.immovable = true;
 
-    let p1Controls = this.game.input.keyboard.createCursorKeys();
-    let p2Controls = {
-      up: game.input.keyboard.addKey(Phaser.Keyboard.W),
-      down: game.input.keyboard.addKey(Phaser.Keyboard.S),
-      left: game.input.keyboard.addKey(Phaser.Keyboard.A),
-      right: game.input.keyboard.addKey(Phaser.Keyboard.D)
-    }
-
     // Client.askNewPlayer();
     let client = new Client(this.game, '8081');
     client.askNewPlayer();
   }
   update() {
-
-    
+    for(let i=0; i<this.game.playerMap.length; i++){
+      this.game.physics.arcade.collide(this.game.playerMap[i], this.platforms);
+      this.playerMap[i].changeVelocity('x', 0);
+      this.playerMap[i].update();
+    }
     // this.game.physics.arcade.collide(this.p1.player, this.platforms);
-    // this.game.physics.arcade.collide(this.p2.player, this.platforms);
     // this.p1.changeVelocity('x', 0);
-    // this.p2.changeVelocity('x', 0);
-
     // this.p1.update();
-    // this.p2.update();
-    
-    // ///////// player 2
-    // if (this.leftButton.isDown)
-    // {
-    //   this.p2.move('left', 150);
-    // }
-    // else if (this.rightButton.isDown)
-    // {
-    //   this.p2.move('right', 150);
-    // }
-    // else
-    // {
-    //   this.p2.stop();
-    // }
-    // if (this.upButton.isDown && this.p2.isTouchingDown())
-    // {
-    //   this.p2.move('up', 350);
-    // }
   }
 }
 
