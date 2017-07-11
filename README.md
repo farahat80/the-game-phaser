@@ -8,5 +8,8 @@ Based on the [Phaser+ES6+Webpack](https://github.com/lean/phaser-es6-webpack) bo
 2- Install Packages:
   ```npm install``` 
   
-3- Start Development:
+3- Start the node server:
+  ```node server.js``` 
+
+4- Start Development:
   ```npm run dev```
