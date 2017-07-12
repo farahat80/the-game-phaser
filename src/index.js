@@ -1,11 +1,20 @@
 import 'pixi'
 import 'p2'
 import Phaser from 'phaser'
-import io from '../../node_modules/socket.io-client';
+import io from '../node_modules/socket.io-client';
 
 
-var sprite, weapon, cursors, fireButton, game, players;
+var sprite, weapon, cursors, fireButton, game;
+var players = [];
+///////////////////////////the client///////////////////////////////////////////
+var client = {}
+client.socket = io.connect('http://localhost:8081');
 
+
+
+///////////////////////////////////////////////////////////////////////////////
+//////////      The game
+///////////////////////////////////////////////////////////////////////////////
 game = new Phaser.Game(800, 600, Phaser.AUTO, '',
   {
     preload: preload,
@@ -14,11 +23,12 @@ game = new Phaser.Game(800, 600, Phaser.AUTO, '',
     render: render
   }
 );
-
+///////////////////////////////////////////////////////////////////////////////
 function preload() {
   game.load.image('bullet', 'assets/shmup-bullet.png');
   game.load.image('ship', 'assets/thrust_ship.png');
 }
+///////////////////////////////////////////////////////////////////////////////
 function create() {
   //  Creates 30 bullets, using the 'bullet' graphic
   weapon = game.add.weapon(30, 'bullet');
@@ -40,7 +50,7 @@ function create() {
   cursors = this.input.keyboard.createCursorKeys();
   fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 }
-
+///////////////////////////////////////////////////////////////////////////////
 function update() {
   if (cursors.up.isDown) {
     game.physics.arcade.accelerationFromRotation(sprite.rotation, 300, sprite.body.acceleration);
@@ -62,7 +72,11 @@ function update() {
   }
   game.world.wrap(sprite, 16);
 }
-
+///////////////////////////////////////////////////////////////////////////////
 function render() {
   //weapon.debug();
+}
+///////////////////////////////////////////////////////////////////////////////
+function newPlayer() {
+  
 }
