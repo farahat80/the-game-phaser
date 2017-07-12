@@ -1,9 +1,15 @@
 import Player from '../common/player';
+import Client from '../common/client';
 
 class Main extends Phaser.State {
   constructor() {
-    super()
+    super();
     this.platforms = null;
+  }
+  init() {
+    this.game.stage.disableVisibilityChange = true;
+    this.client = new Client(this.game, '8081');
+    this.keyboard = this.game.input.keyboard.createCursorKeys();
   }
   preload() {
     this.game.load.image('sky', 'assets/sky.png');
@@ -12,6 +18,7 @@ class Main extends Phaser.State {
     this.game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
   }
   create() {
+    this.game.playerMap = {};
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     this.game.add.sprite(0, 0, 'sky');
 
@@ -38,46 +45,21 @@ class Main extends Phaser.State {
 
     ledge.body.immovable = true;
 
-    let p1Controls = this.game.input.keyboard.createCursorKeys();
-    let p2Controls = {
-      up: game.input.keyboard.addKey(Phaser.Keyboard.W),
-      down: game.input.keyboard.addKey(Phaser.Keyboard.S),
-      left: game.input.keyboard.addKey(Phaser.Keyboard.A),
-      right: game.input.keyboard.addKey(Phaser.Keyboard.D)
-    }
-    
-    this.p1 = new Player(this.game, p1Controls, 32, this.game.world.height - 150, 'dude');
-    this.p2 = new Player(this.game, p2Controls, 100, this.game.world.height - 150, 'dude');
-
+    this.client.register();
   }
-
   update() {
-    this.game.physics.arcade.collide(this.p1.player, this.platforms);
-    this.game.physics.arcade.collide(this.p2.player, this.platforms);
-    this.p1.changeVelocity('x', 0);
-    this.p2.changeVelocity('x', 0);
-
-    this.p1.update();
-    this.p2.update();
-    
-    // ///////// player 2
-    // if (this.leftButton.isDown)
-    // {
-    //   this.p2.move('left', 150);
-    // }
-    // else if (this.rightButton.isDown)
-    // {
-    //   this.p2.move('right', 150);
-    // }
-    // else
-    // {
-    //   this.p2.stop();
-    // }
-    // if (this.upButton.isDown && this.p2.isTouchingDown())
-    // {
-    //   this.p2.move('up', 350);
-    // }
-
+    if(this.game.player){
+      if(this.keyboard.left.isDown){
+        this.game.player.x -= 10;
+      } else if(this.keyboard.right.isDown){
+        this.game.player.x += 10;
+      } else if(this.keyboard.up.isDown){
+        this.game.player.y -= 10;
+      } else if(this.keyboard.down.isDown){
+        this.game.player.y += 10;
+      }
+      this.client.move(this.game.player);
+    }
   }
 }
 
