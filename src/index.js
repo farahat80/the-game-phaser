@@ -87,8 +87,8 @@ function registerPlayer(data) {
   weapon.trackSprite(sprite, 0, 0, true);
 }
 ///////////////////////////////////////////////////////////////////////////////
-function getExistingPlayers(players) {
-  players.forEach(function (player) {
+function getExistingPlayers(data) {
+  data.forEach(function (player) {
     game.add.sprite(player.x, player.y, 'ship');
   })
 }
