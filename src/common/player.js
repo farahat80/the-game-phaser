@@ -1,11 +1,10 @@
 export default class Player{
-  constructor(gameObj, controls, x, y, spriteName) {
+  constructor(gameObj, x, y, spriteName) {
     this.game = gameObj;
     this.x = x;
     this.y = y;
     this.sprite = spriteName;
     this.player = null;
-    this.controls = controls
     this.createPlayer();
   }
   createPlayer() {
@@ -20,24 +19,24 @@ export default class Player{
     player.animations.add('right', [5, 6, 7, 8], 10, true);
     this.player = player;
   }
-  update() {
-    if (this.controls.left.isDown)
-    {
-      this.move('left', 150);
-    }
-    else if (this.controls.right.isDown)
-    {
-      this.move('right', 150);
-    }
-    else
-    {
-      this.stop();
-    }
-    if (this.controls.up.isDown && this.isTouchingDown())
-    {
-      this.move('up', 350);
-    }
-  }
+  // update() {
+  //   if (this.controls.left.isDown)
+  //   {
+  //     this.move('left', 150);
+  //   }
+  //   else if (this.controls.right.isDown)
+  //   {
+  //     this.move('right', 150);
+  //   }
+  //   else
+  //   {
+  //     this.stop();
+  //   }
+  //   if (this.controls.up.isDown && this.isTouchingDown())
+  //   {
+  //     this.move('up', 350);
+  //   }
+  // }
   changeVelocity(axis, speed) {
     this.player.body.velocity[axis] = speed;
   }

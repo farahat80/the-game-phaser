@@ -28,8 +28,8 @@ export default class Client {
     }
   }
   addPlayer(playerData) {
-    let keyboard = this.game.input.keyboard.createCursorKeys();
-    this.game.playerMap[playerData.id] = new Player(this.game, keyboard,
+    this.game.playerId = playerData.id;
+    this.game.playerMap[playerData.id] = new Player(this.game,
                                                     playerData.x, playerData.y,
                                                     'dude');
   }
