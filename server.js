@@ -14,6 +14,7 @@ io.on('connection', function (socket) {
   socket.emit('allExistingPlayers', getAllPlayers());
 
   socket.on('register', function () {
+    log('new registration')
     socket.player = {
       id: server.lastPlayerID++,
       x: randomInt(100, 400),
