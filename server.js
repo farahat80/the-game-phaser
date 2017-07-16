@@ -26,6 +26,9 @@ io.on('connection', function (socket) {
   socket.on('fire', function(){
     io.sockets.emit('playerShoot', socket.player.id);
   });
+  socket.on('disconnect',function(){
+    socket.broadcast.emit('removePlayer', socket.player.id);
+  });
 });
 
 function getAllPlayers() {

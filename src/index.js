@@ -15,6 +15,7 @@ function connect() {
   client.socket.on('allPlayers', addAllPlayers);
   client.socket.on('playerMoved', movePlayer);
   client.socket.on('playerShoot', shootPlayer);
+  client.socket.on('removePlayer', removePlayer);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -140,4 +141,11 @@ function shootPlayer(id) {
   weapon.fire();
 
   game.world.wrap(sprite, 16);
+}
+///////////////////////////////////////////////////////////////////////////////
+function removePlayer(id) {
+  players[id].weapon.destroy();
+  players[id].sprite.destroy();
+
+  delete players[id];
 }
