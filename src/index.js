@@ -3,9 +3,18 @@ import 'p2'
 import Phaser from 'phaser'
 import io from '../node_modules/socket.io-client';
 
+const NORTH = 'north';
+const SOUTH = 'south';
+const EAST = 'east';
+const WEST = 'west';
 
-var cursors, fireButton, game;
-var gameOn = false;
+var DIR_TO_ANGLE = {};
+DIR_TO_ANGLE[NORTH] =  90; 
+DIR_TO_ANGLE[SOUTH] = -90;
+DIR_TO_ANGLE[EAST] = 0;
+DIR_TO_ANGLE[WEST] = -180;
+
+var cursors, game;
 var players = {};
 ///////////////////////////the client///////////////////////////////////////////
 var client = {}
@@ -13,8 +22,8 @@ function connect() {
   client.socket = io.connect('http://localhost:8081');
   client.socket.on('newPlayer', addNewPlayer);
   client.socket.on('allPlayers', addAllPlayers);
-  client.socket.on('playerMoved', movePlayer);
-  client.socket.on('playerShoot', shootPlayer);
+  client.socket.on('playerRotated', rotatePlayer);
+  client.socket.on('allPlayersMove', moveAllPlayers);
   client.socket.on('removePlayer', removePlayer);
 }
 
@@ -36,115 +45,76 @@ function init() {
 }
 ///////////////////////////////////////////////////////////////////////////////
 function preload() {
-  game.load.image('bullet', 'assets/shmup-bullet.png');
   game.load.image('ship', 'assets/thrust_ship.png');
 }
 ///////////////////////////////////////////////////////////////////////////////
 function create() {
   cursors = this.input.keyboard.createCursorKeys();
-  fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
   connect();
   client.socket.emit('register');
+
+  cursors.left.onDown.add(function(){
+    client.socket.emit('rotate', 'left');
+  });
+  cursors.right.onDown.add(function(){
+    client.socket.emit('rotate', 'right');
+  });
 }
 ///////////////////////////////////////////////////////////////////////////////
 function update() {
-  if(gameOn){
-    if (cursors.up.isDown) {
-      client.socket.emit('move', 'forward');
-    }
-    else {
-      client.socket.emit('move', 'stop');
-    }
-
-    if (cursors.left.isDown) {
-      client.socket.emit('move', 'left');
-    }
-    else if (cursors.right.isDown) {
-      client.socket.emit('move', 'right');
-    }
-    else {
-      client.socket.emit('move', 'none');
-    }
-
-    if (fireButton.isDown) {
-      client.socket.emit('fire');
-    }
-  }
+  // Not yet
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function render() {
-  //weapon.debug();
+  // Not yet
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 function addNewPlayer(data) {
   var sprite = game.add.sprite(data.x, data.y, 'ship');
-  //  Creates 30 bullets, using the 'bullet' graphic
-  var weapon = game.add.weapon(30, 'bullet');
-
-  //  The bullet will be automatically killed when it leaves the world bounds
-  weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-  //  The speed at which the bullet is fired
-  weapon.bulletSpeed = 600;
-  //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
-  weapon.fireRate = 100;
+  var angle = DIR_TO_ANGLE[data.direction];
 
   sprite.anchor.set(0.5);
   game.physics.arcade.enable(sprite);
-  sprite.body.drag.set(70);
-  sprite.body.maxVelocity.set(200);
-  //  Tell the Weapon to track the 'sprite'
-  //  With no offsets from the position
-  //  But the 'true' argument tells the weapon to track sprite rotation
-  weapon.trackSprite(sprite, 0, 0, true);
+  sprite.body.immovable = false;
+  sprite.body.collideWorldBounds = true;
+  sprite.angle = angle;
 
-  players[data.id] = {'sprite': sprite, 'weapon': weapon};
+  players[data.id] = sprite;
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 function addAllPlayers(allPlayers) {
   allPlayers.forEach(function(data) {
     addNewPlayer(data);
   });
-  gameOn = true;
 }
+
 ///////////////////////////////////////////////////////////////////////////////
-function movePlayer(data) {
-  var direction = data['direction'];
-  var sprite = players[data.id].sprite;
-
-  switch(direction){
-    case "forward":
-      game.physics.arcade.accelerationFromRotation(sprite.rotation, 300, sprite.body.acceleration);
-      break;
-    case 'stop':
-      sprite.body.acceleration.set(0);
-      break;
-    case 'left':
-      sprite.body.angularVelocity = -300;
-      break;
-    case 'right':
-      sprite.body.angularVelocity = 300;
-      break;
-    case 'none':
-      sprite.body.angularVelocity = 0;
-      break;
-  }
-
-  game.world.wrap(sprite, 16);
+function moveAllPlayers(allPlayers) {
+  allPlayers.forEach(function(data) {
+    movePlayer(data);
+  });
 }
+
 ///////////////////////////////////////////////////////////////////////////////
-function shootPlayer(id) {
-  var weapon = players[id].weapon
-  var sprite = players[id].sprite
+function movePlayer(playerData) {
+  var sprite = players[playerData.id];
 
-  weapon.fire();
+  game.physics.arcade.moveToXY(sprite, playerData.x, playerData.y, 100, 500);
+}
 
-  game.world.wrap(sprite, 16);
+///////////////////////////////////////////////////////////////////////////////
+function rotatePlayer(playerData) {
+  var sprite = players[playerData.id];
+  var angle = DIR_TO_ANGLE[playerData.direction];
+  
+  sprite.angle = angle;
 }
 ///////////////////////////////////////////////////////////////////////////////
 function removePlayer(id) {
-  players[id].weapon.destroy();
   players[id].sprite.destroy();
 
   delete players[id];
